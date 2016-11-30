@@ -44,13 +44,11 @@ pygame.display.set_caption("Hockey Star")
 def redraw():
     gameDisplay.fill(white)
 
-class defender(pygame.sprite.Sprite):
+"""class defender(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        pygame.image.load(os.path.join('images', 'defender.png'))
-        screen = pyghame.display.get_surface()
-        self.rect.topleft = 10,10
-        self.
+        self.image = pygame.image.load(os.path.join('images', 'defender.png'))
+        self.rect = self"""
 
 
 pygame.display.update()
@@ -60,8 +58,8 @@ player = pygame.image.load(os.path.join('images', 'hockeyplayer.png'))
 net = pygame.image.load(os.path.join('images', 'hockeysidenet.png'))
 defender = pygame.image.load(os.path.join('images', 'defender.png'))
 
-time = 10
-pygame.time.set_timer(USEREVENT+1, 1000)
+f = font.Font(None, 25)
+goals = 0
 
 gameExit = False
 while not gameExit:
@@ -84,6 +82,7 @@ while not gameExit:
         skate.play()
         if event.key == pygame.K_LEFT:
             cheer.play()
+            goals += 1
 
 
           
@@ -98,10 +97,12 @@ while not gameExit:
     gameDisplay.blit(bg, (bg_x, bg_y))
     gameDisplay.blit(player, (x_pos,y_pos))
     gameDisplay.blit(net, (netx,nety)) 
-    gameDisplay.blit(defender, (defx,defy))           
+    gameDisplay.blit(defender, (defx,defy))   
+    t = f.render("Goals = " + str(goals), False, red)
+    gameDisplay.blit(t, (320,0))
     pygame.display.update()   
-    if time == 0:
-        gameExit = True 
+    #if time == 0:
+        #gameExit = True 
 
 
 
