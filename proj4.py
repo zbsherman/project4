@@ -31,6 +31,7 @@ bg_y = 0
 #Sound
 skate = pygame.mixer.Sound("skate.wav")
 cheer = pygame.mixer.Sound("cheer.wav")
+aw = pygame.mixer.Sound("aw.wav")
 
 #Create surface
 gameDisplay = pygame.display.set_mode((800,600))
@@ -68,37 +69,35 @@ class net(Sprite):
         nety = randint(50,450)
         netx = 60
         self.rect.center = (netx, nety)
-class puck(Sprite):
+
+class Puck(Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(os.path.join('images', 'hockeyplayer.png'))
+        self.image = pygame.image.load(os.path.join('images', 'puck.png'))
         self.rect = self.image.get_rect()
     def update(self):
-        self.rect.x -= 5
+        self.rect.x -= 7
 
 
-
-defen1 = defender()
-defen2 = defender()
+#Sprites and Sprite Groups
 net = net()
-allsprites = pygame.sprite.Group()
-defs = pygame.sprite.Group()
-pucks = pygame.sprite.Group()
 nets = pygame.sprite.Group()
 nets.add(net)
-defs.add(defen1)
-defs.add(defen2)
+defs = pygame.sprite.Group()
+pucks = pygame.sprite.Group()
+defsandgoal = pygame.sprite.Group()
+defsandgoal.add(net)
 
-defsandgoal = RenderPlain(defen1,defen2,net)
+
 pygame.display.update()
 
 bg = pygame.image.load(os.path.join('images', 'halfrink.jpg'))
 player = pygame.image.load(os.path.join('images', 'hockeyplayer.png'))
-#puck = pygame.image.load(os.path.join('images', 'puck.png'))
-#defender = pygame.image.load(os.path.join('images', 'defender.png'))
+
 
 f = font.Font(None, 25)
 goals = 0
+lives = 3
 
 gameExit = False
 while not gameExit:
@@ -109,28 +108,36 @@ while not gameExit:
             gameExit = True
 
 
+
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_UP:
             y_pos -= 10
         if event.key == pygame.K_DOWN:
             y_pos += 10
         skate.play()
-        if event.key == pygame.K_SPACE:
-            puck = puck()
-            puck.rect.x = pos_x
-            puck.rect.y = pos_y
-            pucks.add(puck)
-            allsprites.add(puck)
+        if event.key == pygame.K_SPACE and len(pucks) == 0:
+            puck1 = Puck()
+            puck1.rect.x = x_pos
+            puck1.rect.y = y_pos+80
+            pucks.add(puck1)
+
+    pucks.update()
+
     for puck in pucks:
-        goal = pygame.sprite.spritecollide(puck, nets, True)
+        if len(defs) > 0:
+            if len(pygame.sprite.spritecollide(puck1, defs, False) )> 0:
+                pucks.remove(puck1)
+                aw.play()
+                lives -= 1
+                defsandgoal.update()
 
-        
-        
-        if event.key == pygame.K_LEFT:
-            cheer.play()
+        if pygame.sprite.collide_rect(net, puck1) == True:
+            pucks.remove(puck1)
             goals += 1
-            defsandgoal.update()  
-
+            cheer.play()
+            defsandgoal.update()
+        if puck.rect.x < net.rect.x:
+            pucks.remove(puck1)
 
 
     if y_pos>= (HEIGHT-100):
@@ -138,18 +145,50 @@ while not gameExit:
     elif y_pos <= 0:
         y_pos = 10
 
-    
+
+    if goals == 1 and len(defsandgoal) == 1:
+        defen1 = defender()
+        defsandgoal.add(defen1)
+        defs.add(defen1)
+    if goals == 3 and len(defsandgoal) == 2:
+        defen2 = defender()
+        defsandgoal.add(defen2)
+        defs.add(defen2)
+    if goals == 5 and len(defsandgoal) == 3:
+        defen3 = defender()
+        defsandgoal.add(defen3)
+        defs.add(defen3)
+    if goals == 7 and len(defsandgoal) == 4:
+        defen4 = defender()
+        defsandgoal.add(defen4)
+        defs.add(defen4)
+    if goals == 9 and len(defsandgoal) == 5:
+        defen5 = defender()
+        defsandgoal.add(defen5)
+        defs.add(defen5)
+
 
     gameDisplay.blit(bg, (bg_x, bg_y))
-    gameDisplay.blit(player, (x_pos,y_pos))  
-    t = f.render("Goals = " + str(goals), False, red)
-    gameDisplay.blit(t, (320,0))
+    gameDisplay.blit(player, (x_pos,y_pos)) 
     defsandgoal.draw(gameDisplay)
+    pucks.draw(gameDisplay)
+    t = f.render("Goals = " + str(goals), False, red)
+    gameDisplay.blit(t, (200,0))
+    g = f.render("Lives = " + str(lives), False, red)
+    gameDisplay.blit(g, (400,0))
+
+
+    if lives <= 0:
+        gameDisplay.fill(white)
+        s = f.render("Final Score = " + str(goals), False, red)
+        e = f.render("Game Over, click to exit", False, red)
+        gameDisplay.blit(s,(300,200))
+        gameDisplay.blit(e, (300,400))
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            gameExit = True
+
+
     pygame.display.update()   
-
-
-
-
 
 
 pygame.quit()
