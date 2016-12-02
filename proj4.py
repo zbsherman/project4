@@ -1,3 +1,4 @@
+#All modules
 import pygame
 import random
 import os
@@ -19,10 +20,9 @@ HEIGHT = 600
 
 #Colors
 white = (255,255,255)
-black = (0,0,0)
 red = (255, 0, 0)
-green = (0, 255, 0)
-blue = (0, 0, 255)
+
+
 
 #Pos Var
 x_pos = 700
@@ -173,7 +173,7 @@ while not gameExit:
         defsandgoal.add(defen5)
         defs.add(defen5)
 
-
+    #Redraw all things on screen
     gameDisplay.blit(bg, (bg_x, bg_y))
     gameDisplay.blit(player, (x_pos,y_pos)) 
     defsandgoal.draw(gameDisplay)
