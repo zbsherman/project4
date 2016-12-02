@@ -12,6 +12,8 @@ from random import *
 
 pygame.init();
 pygame.mixer.init()
+
+#Width and Height
 WIDTH = 800
 HEIGHT = 600
 
@@ -35,13 +37,13 @@ aw = pygame.mixer.Sound("aw.wav")
 
 #Create surface
 gameDisplay = pygame.display.set_mode((800,600))
-
 pygame.display.set_caption("Hockey Star")
 
 
 def redraw():
     gameDisplay.fill(white)
 
+#Sprite Classes
 class defender(Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -91,6 +93,7 @@ defsandgoal.add(net)
 
 pygame.display.update()
 
+#nonsprite images
 bg = pygame.image.load(os.path.join('images', 'halfrink.jpg'))
 player = pygame.image.load(os.path.join('images', 'hockeyplayer.png'))
 
@@ -125,7 +128,7 @@ while not gameExit:
 
     for puck in pucks:
         if len(defs) > 0:
-            if len(pygame.sprite.spritecollide(puck1, defs, False) )> 0:
+            if len(pygame.sprite.spritecollide(puck1, defs, False) ) > 0:
                 pucks.remove(puck1)
                 aw.play()
                 lives -= 1
