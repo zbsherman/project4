@@ -102,6 +102,7 @@ f = font.Font(None, 25)
 goals = 0
 lives = 3
 
+#Actual Game
 gameExit = False
 while not gameExit:
     score = 0
@@ -111,13 +112,14 @@ while not gameExit:
             gameExit = True
 
 
-
+    #If key is pressed
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_UP:
             y_pos -= 10
         if event.key == pygame.K_DOWN:
             y_pos += 10
         skate.play()
+        #shoot puck
         if event.key == pygame.K_SPACE and len(pucks) == 0:
             puck1 = Puck()
             puck1.rect.x = x_pos
@@ -125,15 +127,16 @@ while not gameExit:
             pucks.add(puck1)
 
     pucks.update()
-
+    #puck options
     for puck in pucks:
         if len(defs) > 0:
+            #If puck hits defender
             if len(pygame.sprite.spritecollide(puck1, defs, False) ) > 0:
                 pucks.remove(puck1)
                 aw.play()
                 lives -= 1
                 defsandgoal.update()
-
+        #If puck hits net
         if pygame.sprite.collide_rect(net, puck1) == True:
             pucks.remove(puck1)
             goals += 1
@@ -142,13 +145,13 @@ while not gameExit:
         if puck.rect.x < net.rect.x:
             pucks.remove(puck1)
 
-
+    #Doesn't allow player to move past border
     if y_pos>= (HEIGHT-100):
         y_pos = HEIGHT-110
     elif y_pos <= 0:
         y_pos = 10
 
-
+    #Adds new defenders for certain goal amounts
     if goals == 1 and len(defsandgoal) == 1:
         defen1 = defender()
         defsandgoal.add(defen1)
@@ -180,7 +183,7 @@ while not gameExit:
     g = f.render("Lives = " + str(lives), False, red)
     gameDisplay.blit(g, (400,0))
 
-
+    #Game over screen
     if lives <= 0:
         gameDisplay.fill(white)
         s = f.render("Final Score = " + str(goals), False, red)
